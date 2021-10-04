@@ -8,7 +8,7 @@ from django.contrib.auth.models import (
 class UserProfileManager(BaseUserManager):
 
     def create_user(self, email, name, password=None):
-        
+
         if not email:
             raise ValueError("User mush have an email address")
         
@@ -18,6 +18,18 @@ class UserProfileManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
+        return user
+    
+    def create_superuser(self, email, name, password=None):
+
+        user = self.create_user(
+            email,
+            password=password,
+            name=name,
+        )
+        user.is_admin = True
+        user.is_superuser = True
+        user.save(using=self._db)
         return user
     
 class UserProfile(AbstractBaseUser, PermissionsMixin):
